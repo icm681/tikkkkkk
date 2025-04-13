@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TikTok Downloader</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 50px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+    }
+    .result {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 TikTok Downloader (Tanpa WM)</h1>
+  <input type="text" id="username" placeholder="Masukkan username TikTok (tanpa @)" />
+  <button onclick="fetchVideos()">Ambil Video</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    async function fetchVideos() {
+      const username = document.getElementById("username").value;
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "Loading...";
+
+      try {
+        const res = await fetch(`/api/tiktok?username=${username}`);
+        const data = await res.json();
+
+        if (data?.videos?.length > 0) {
+          resultDiv.innerHTML = data.videos.map(v => `
+            <div style="margin-bottom: 20px;">
+              <video src="${v.videoUrlNoWatermark}" controls width="300"></video><br/>
+              <a href="${v.videoUrlNoWatermark}" download>Unduh MP4 (No WM)</a>
+            </div>
+          `).join('');
+        } else {
+          resultDiv.innerHTML = "Tidak ada video ditemukan.";
+        }
+      } catch (err) {
+        console.error(err);
+        resultDiv.innerHTML = "Gagal mengambil data.";
+      }
+    }
+  </script>
+</body>
+</html>
